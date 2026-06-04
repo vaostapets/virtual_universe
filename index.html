@@ -146,7 +146,74 @@
     }
     .btn--nav:hover { background: transparent; color: var(--accent); }
 
-    @media (max-width: 768px) { .nav-links { display: none; } }
+    /* BURGER */
+    .burger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 36px;
+      height: 36px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      flex-shrink: 0;
+    }
+    .burger span {
+      display: block;
+      height: 1.5px;
+      background: var(--text);
+      transition: transform 0.3s, opacity 0.3s, width 0.3s;
+      transform-origin: center;
+    }
+    .burger span:nth-child(3) { width: 60%; margin-left: auto; }
+    body.menu-open .burger span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    body.menu-open .burger span:nth-child(2) { opacity: 0; }
+    body.menu-open .burger span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); width: 100%; }
+
+    /* MOBILE MENU */
+    #mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 99;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+    }
+    body.menu-open #mobile-menu { display: flex; }
+    #mobile-menu a {
+      font-family: var(--font-h);
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--text);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    #mobile-menu a:hover { color: var(--accent); }
+    #mobile-menu .btn--mobile {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      padding: 14px 40px;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      margin-top: 8px;
+      animation: none;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .btn--nav { display: none; }
+      .burger { display: flex; }
+    }
 
     /* ── HERO ── */
     #hero {
@@ -420,8 +487,20 @@
         <a href="#footer">Контакты</a>
       </div>
       <a href="#" class="btn btn--nav" id="nav-cta">Зарегистрироваться</a>
+      <button class="burger" id="burger" aria-label="Меню" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
+
+  <!-- MOBILE MENU -->
+  <div id="mobile-menu" role="dialog" aria-modal="true" aria-label="Навигация">
+    <a href="#stats"      class="mobile-link">Призовой фонд</a>
+    <a href="#tournament" class="mobile-link">Турнир</a>
+    <a href="#faq"        class="mobile-link">FAQ</a>
+    <a href="#footer"     class="mobile-link">Контакты</a>
+    <a href="#" id="mobile-cta" class="btn btn--mobile">Зарегистрироваться</a>
+  </div>
 
   <!-- HERO -->
   <section id="hero">
@@ -549,6 +628,18 @@
     window.addEventListener('scroll', () => {
       document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
     });
+
+    // Burger menu
+    const burger = document.getElementById('burger');
+    const closeMenu = () => {
+      document.body.classList.remove('menu-open');
+      burger.setAttribute('aria-expanded', 'false');
+    };
+    burger.addEventListener('click', () => {
+      const open = document.body.classList.toggle('menu-open');
+      burger.setAttribute('aria-expanded', open);
+    });
+    document.querySelectorAll('#mobile-menu a').forEach(a => a.addEventListener('click', closeMenu));
 
     // Countdown timer
     function updateTimer() {
