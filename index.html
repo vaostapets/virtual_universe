@@ -55,7 +55,17 @@
       color: var(--muted);
       text-transform: uppercase;
       margin-bottom: 52px;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+    .section-label::before,
+    .section-label::after {
+      content: '';
+      flex: 0 0 28px;
+      height: 1px;
+      background: rgba(0,191,255,0.35);
     }
 
     /* SCROLL ANIMATIONS */
@@ -225,6 +235,73 @@
       padding: 100px 32px 80px;
       overflow: hidden;
     }
+
+    /* Мягкое свечение за заголовком */
+    #hero::before {
+      content: '';
+      position: absolute;
+      top: 42%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px; height: 500px;
+      background: radial-gradient(ellipse, rgba(0,191,255,0.07) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Дрейфующие геометрические фигуры */
+    .hero-shapes {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .shape {
+      position: absolute;
+      border: 1px solid rgba(0,191,255,0.09);
+    }
+    .shape-1 {
+      width: 130px; height: 130px;
+      top: 18%; left: 7%;
+      animation: drift1 24s ease-in-out infinite;
+    }
+    .shape-2 {
+      width: 65px; height: 65px;
+      bottom: 20%; right: 9%;
+      animation: drift2 30s ease-in-out infinite;
+    }
+    .shape-3 {
+      width: 200px; height: 0;
+      border-width: 0 0 1px 0;
+      border-color: rgba(0,191,255,0.07);
+      top: 30%; right: 6%;
+      animation: drift3 36s ease-in-out infinite;
+    }
+    .shape-4 {
+      width: 45px; height: 45px;
+      top: 62%; left: 13%;
+      border-radius: 50%;
+      animation: drift4 20s ease-in-out infinite;
+    }
+
+    @keyframes drift1 {
+      0%, 100% { transform: translate(0,0) rotate(0deg);   opacity: 0.5; }
+      40%       { transform: translate(18px,-16px) rotate(14deg); opacity: 1; }
+      70%       { transform: translate(-8px,9px) rotate(-7deg);  opacity: 0.3; }
+    }
+    @keyframes drift2 {
+      0%, 100% { transform: translate(0,0) rotate(0deg);    opacity: 0.4; }
+      50%       { transform: translate(-22px,18px) rotate(42deg); opacity: 0.9; }
+    }
+    @keyframes drift3 {
+      0%, 100% { transform: translateX(0) scaleX(1);    opacity: 0.6; }
+      50%       { transform: translateX(-28px) scaleX(0.55); opacity: 0.2; }
+    }
+    @keyframes drift4 {
+      0%, 100% { transform: translate(0,0);     opacity: 0.35; }
+      50%       { transform: translate(14px,-18px); opacity: 0.7; }
+    }
+
     .hero-content { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; }
 
     .hero-logo {
@@ -292,6 +369,14 @@
     #stats {
       padding: 0 0 100px;
       border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    #stats::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,191,255,0.45) 30%, rgba(0,191,255,0.45) 70%, transparent);
     }
     .stats-row {
       display: flex;
@@ -504,6 +589,12 @@
 
   <!-- HERO -->
   <section id="hero">
+    <div class="hero-shapes" aria-hidden="true">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+      <div class="shape shape-4"></div>
+    </div>
     <div class="container hero-content">
       <h1 class="hero-logo">VIRTUAL UNIVERSE</h1>
       <p class="hero-sub">Организация локальных турниров по CS2</p>
