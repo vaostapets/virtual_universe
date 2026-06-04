@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Virtual Universe — CS2 турниры в Сочи. Реальные призы.">
+  <meta property="og:title" content="Virtual Universe — CS2 турниры, Сочи">
+  <meta property="og:description" content="Реальные призы. 2v2, 5v5, Solo. Ближайший турнир — 13 июня 2026.">
+  <title>Virtual Universe — CS2 Tournaments Sochi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* RESET */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /* TOKENS */
+    :root {
+      --bg:           #0A0A0A;
+      --bg-card:      #111111;
+      --border:       #1A1A1A;
+      --border-2:     #222222;
+      --text:         #FFFFFF;
+      --muted:        #888888;
+      --accent:       #00BFFF;
+      --accent-glow:  rgba(0,191,255,0.3);
+      --font-h:       'Orbitron', monospace;
+      --font-b:       'IBM Plex Mono', monospace;
+    }
+
+    /* GLOBAL */
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-b);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* GRID TEXTURE */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    section, footer { position: relative; z-index: 1; }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    h1, h2, h3 { font-family: var(--font-h); letter-spacing: 0.05em; }
+
+    .section-title {
+      font-family: var(--font-h);
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 48px;
+    }
+
+    /* SCROLL ANIMATIONS */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* CTA BUTTON */
+    .btn {
+      display: inline-block;
+      font-family: var(--font-h);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 14px 36px;
+      transition: background 0.3s, color 0.3s;
+      animation: glow-pulse 2.5s ease-in-out infinite;
+    }
+    .btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+      animation: none;
+      box-shadow: 0 0 30px var(--accent-glow);
+    }
+
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 8px var(--accent-glow); }
+      50%       { box-shadow: 0 0 24px var(--accent-glow), 0 0 48px rgba(0,191,255,0.12); }
+    }
+
+    /* NAV */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      border-bottom: 1px solid transparent;
+      transition: background 0.4s, border-color 0.4s;
+    }
+    #nav.scrolled {
+      background: rgba(10,10,10,0.92);
+      border-bottom-color: var(--border);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      gap: 24px;
+    }
+    .nav-logo {
+      font-family: var(--font-h);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--text);
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .btn--sm {
+      font-size: 0.65rem;
+      padding: 9px 18px;
+      flex-shrink: 0;
+      animation: none;
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+    .btn--sm:hover { animation: none; }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+    }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 24px 60px;
+      overflow: hidden;
+    }
+    .hero-decor {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      opacity: 0.06;
+      pointer-events: none;
+      width: min(400px, 80vw);
+      height: min(400px, 80vw);
+    }
+    .hero-decor svg { width: 100%; height: 100%; }
+    .hero-content { position: relative; z-index: 1; }
+
+    .hero-logo {
+      font-size: clamp(2rem, 8vw, 5.5rem);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      background: linear-gradient(135deg, #fff 40%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+      line-height: 1.1;
+    }
+    .hero-sub {
+      font-size: clamp(0.78rem, 2vw, 0.95rem);
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      margin-bottom: 60px;
+    }
+
+    /* TIMER */
+    .timer {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 56px;
+    }
+    .timer-unit { display: flex; flex-direction: column; align-items: center; min-width: 72px; }
+    .timer-val {
+      font-family: var(--font-h);
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      letter-spacing: 0.05em;
+    }
+    .timer-lbl {
+      font-size: 0.58rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+    .timer-sep {
+      font-family: var(--font-h);
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 700;
+      color: var(--accent);
+      opacity: 0.4;
+      margin-top: 2px;
+      line-height: 1;
+    }
+
+    @media (max-width: 480px) {
+      .timer-unit { min-width: 52px; }
+      .timer { gap: 4px; }
+      .hero-sub { margin-bottom: 36px; }
+    }
+
+    /* TOURNAMENT CARDS */
+    #tournament { padding: 100px 0; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .card {
+      background: var(--bg-card);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      transition: background 0.3s;
+    }
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: transparent;
+      transition: background 0.3s;
+    }
+    .card:hover { background: #151515; }
+    .card:hover::after { background: var(--accent); }
+
+    .card-ico { font-size: 1.3rem; line-height: 1; }
+    .card-lbl {
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .card-val {
+      font-family: var(--font-h);
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .card-val small {
+      font-family: var(--font-b);
+      font-size: 0.68rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+    .coming-soon {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 24px;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 768px) { .cards { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 480px) { .cards { grid-template-columns: 1fr; } .card { padding: 24px 20px; } }
+
+    /* CALCULATOR */
+    #calculator { padding: 100px 0; }
+
+    .calc-box {
+      border: 1px solid var(--border);
+      padding: 48px;
+      max-width: 640px;
+      margin: 0 auto;
+      background: var(--bg-card);
+    }
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .calc-lbl {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .calc-count {
+      font-family: var(--font-h);
+      font-size: 0.88rem;
+      color: var(--accent);
+    }
+
+    .slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 2px;
+      background: var(--border-2);
+      outline: none;
+      margin-bottom: 40px;
+      cursor: pointer;
+    }
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent-glow);
+      cursor: pointer;
+    }
+    .slider::-moz-range-thumb {
+      width: 18px; height: 18px;
+      background: var(--accent);
+      border: none;
+      box-shadow: 0 0 10px var(--accent-glow);
+      cursor: pointer;
+    }
+
+    .calc-result {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: 32px;
+    }
+    .calc-prize {
+      font-family: var(--font-h);
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    @media (max-width: 600px) {
+      .calc-box { padding: 28px 20px; }
+      .calc-result { flex-direction: column; align-items: flex-start; gap: 12px; }
+    }
+
+    /* FAQ */
+    #faq { padding: 100px 0; }
+    .faq { max-width: 720px; margin: 0 auto; }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-item:first-child { border-top: 1px solid var(--border); }
+
+    .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-family: var(--font-b);
+      font-size: 0.88rem;
+      letter-spacing: 0.03em;
+      text-align: left;
+      padding: 22px 0;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      transition: color 0.2s;
+    }
+    .faq-q:hover { color: var(--accent); }
+    .faq-ico {
+      font-size: 1.4rem;
+      color: var(--accent);
+      font-weight: 300;
+      flex-shrink: 0;
+      transition: transform 0.3s;
+      line-height: 1;
+    }
+    .faq-item.open .faq-ico { transform: rotate(45deg); }
+
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.4s ease;
+    }
+    .faq-item.open .faq-a { max-height: 200px; padding-bottom: 20px; }
+    .faq-a p { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
+
+    /* FOOTER */
+    #footer {
+      padding: 64px 0 40px;
+      border-top: 1px solid var(--border);
+    }
+    .footer-inner { display: flex; flex-direction: column; align-items: center; gap: 28px; }
+    .footer-top { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .footer-logo {
+      font-family: var(--font-h);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+    }
+    .footer-tag {
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .footer-socials { display: flex; gap: 24px; }
+    .social {
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .social:hover { color: var(--accent); transform: translateY(-2px); }
+    .footer-copy { font-size: 0.62rem; color: var(--muted); letter-spacing: 0.1em; opacity: 0.5; }
+
+    /* MOBILE FINAL PASS */
+    @media (max-width: 768px) {
+      #tournament, #calculator, #faq { padding: 72px 0; }
+      .section-title { margin-bottom: 32px; }
+    }
+    @media (max-width: 480px) {
+      #hero { padding: 80px 16px 48px; }
+      .timer { margin-bottom: 40px; }
+      .faq-q { font-size: 0.82rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="nav">
+    <div class="container nav-inner">
+      <a href="#hero" class="nav-logo">VIRTUAL UNIVERSE</a>
+      <div class="nav-links">
+        <a href="#tournament">О турнире</a>
+        <a href="#calculator">Призы</a>
+        <a href="#faq">FAQ</a>
+        <a href="#footer">Контакты</a>
+      </div>
+      <a href="#" class="btn btn--sm" id="nav-cta">Зарегистрироваться</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-decor" aria-hidden="true">
+      <svg width="400" height="400" viewBox="0 0 400 400" fill="none">
+        <circle cx="200" cy="200" r="150" stroke="#00BFFF" stroke-width="0.5"/>
+        <circle cx="200" cy="200" r="80"  stroke="#00BFFF" stroke-width="0.5"/>
+        <circle cx="200" cy="200" r="4"   fill="#00BFFF"/>
+        <line x1="200" y1="0"   x2="200" y2="120" stroke="#00BFFF" stroke-width="0.5"/>
+        <line x1="200" y1="280" x2="200" y2="400" stroke="#00BFFF" stroke-width="0.5"/>
+        <line x1="0"   y1="200" x2="120" y2="200" stroke="#00BFFF" stroke-width="0.5"/>
+        <line x1="280" y1="200" x2="400" y2="200" stroke="#00BFFF" stroke-width="0.5"/>
+        <line x1="148" y1="152" x2="172" y2="152" stroke="#00BFFF" stroke-width="0.5"/>
+        <line x1="228" y1="152" x2="252" y2="152" stroke="#00BFFF" stroke-width="0.5"/>
+        <line x1="148" y1="248" x2="172" y2="248" stroke="#00BFFF" stroke-width="0.5"/>
+        <line x1="228" y1="248" x2="252" y2="248" stroke="#00BFFF" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="container hero-content">
+      <h1 class="hero-logo">VIRTUAL UNIVERSE</h1>
+      <p class="hero-sub">CS2 турниры. Реальные призы. Сочи.</p>
+      <div class="timer" id="timer">
+        <div class="timer-unit"><span class="timer-val" id="days">00</span><span class="timer-lbl">дней</span></div>
+        <div class="timer-sep">:</div>
+        <div class="timer-unit"><span class="timer-val" id="hours">00</span><span class="timer-lbl">часов</span></div>
+        <div class="timer-sep">:</div>
+        <div class="timer-unit"><span class="timer-val" id="minutes">00</span><span class="timer-lbl">минут</span></div>
+        <div class="timer-sep">:</div>
+        <div class="timer-unit"><span class="timer-val" id="seconds">00</span><span class="timer-lbl">секунд</span></div>
+      </div>
+      <a href="#" id="hero-cta" class="btn">Зарегистрироваться →</a>
+    </div>
+  </section>
+
+  <!-- О ТУРНИРЕ -->
+  <section id="tournament">
+    <div class="container reveal">
+      <p class="section-title">О турнире</p>
+      <div class="cards">
+        <div class="card"><span class="card-ico">📅</span><span class="card-lbl">Дата</span><span class="card-val">13 июня 2026, 12:00</span></div>
+        <div class="card"><span class="card-ico">📍</span><span class="card-lbl">Место</span><span class="card-val">Сочи</span></div>
+        <div class="card"><span class="card-ico">🎮</span><span class="card-lbl">Игра</span><span class="card-val">CS2</span></div>
+        <div class="card"><span class="card-ico">👥</span><span class="card-lbl">Формат</span><span class="card-val">2v2</span></div>
+        <div class="card">
+          <span class="card-ico">💰</span>
+          <span class="card-lbl">Взнос</span>
+          <span class="card-val">1 000 ₽ / чел<br><small>2 000 ₽ / команда</small></span>
+        </div>
+        <div class="card"><span class="card-ico">🏆</span><span class="card-lbl">Призовой фонд</span><span class="card-val">30 000 ₽</span></div>
+      </div>
+      <p class="coming-soon">Скоро: форматы 5v5 и Solo</p>
+    </div>
+  </section>
+
+  <!-- КАЛЬКУЛЯТОР -->
+  <section id="calculator">
+    <div class="container reveal">
+      <p class="section-title">Призовой фонд</p>
+      <div class="calc-box">
+        <div class="calc-row">
+          <span class="calc-lbl">Количество команд</span>
+          <span class="calc-count"><span id="teams-display">15</span> команд</span>
+        </div>
+        <input type="range" id="teams-slider" min="2" max="32" value="15" class="slider" aria-label="Количество команд">
+        <div class="calc-result">
+          <span class="calc-lbl">Общий призовой фонд</span>
+          <span class="calc-prize" id="prize-display">30&nbsp;000&nbsp;₽</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="container reveal">
+      <p class="section-title">FAQ</p>
+      <div class="faq">
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">Как зарегистрироваться?<span class="faq-ico" aria-hidden="true">+</span></button>
+          <div class="faq-a"><p>Нажми кнопку «Зарегистрироваться» — она откроет наш Telegram. Напиши нам, и мы пришлём все детали.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">Как оплатить взнос?<span class="faq-ico" aria-hidden="true">+</span></button>
+          <div class="faq-a"><p>Реквизиты отправим в Telegram после подтверждения регистрации. Взнос — 1 000 ₽ с участника.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">Какой формат турнира?<span class="faq-ico" aria-hidden="true">+</span></button>
+          <div class="faq-a"><p>Ближайший — 2v2. В планах форматы 5v5 и Solo. Следи за анонсами в нашем Telegram-канале.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">Где следить за результатами?<span class="faq-ico" aria-hidden="true">+</span></button>
+          <div class="faq-a"><p>Все результаты и обновления публикуем в Telegram и ВКонтакте.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">Что если команда не придёт?<span class="faq-ico" aria-hidden="true">+</span></button>
+          <div class="faq-a"><p>Просим предупреждать заранее в Telegram. Правила возврата взноса уточняйте у организаторов.</p></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="footer">
+    <div class="container footer-inner">
+      <div class="footer-top">
+        <span class="footer-logo">VIRTUAL UNIVERSE</span>
+        <span class="footer-tag">CS2 турниры · Сочи</span>
+      </div>
+      <div class="footer-socials">
+        <a href="#" class="social" aria-label="Telegram" id="footer-tg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        </a>
+        <a href="#" class="social" aria-label="ВКонтакте" id="footer-vk">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.05-1.727-1.033-1-1.49-.85-1.49.285v1.49c0 .48-.152.767-1.404.767-2.038-.152-4.3-1.405-5.852-3.74C5.006 11.36 4.5 9.5 4.5 8.316c0-.65.24-.85.85-.85h1.74c.63 0 .872.285.978.73.72 2.574 2.16 4.815 2.726 4.815.215 0 .31-.097.31-.633V10.66c-.065-1.14-.66-1.234-.66-1.64 0-.187.15-.38.39-.38h2.74c.525 0 .706.285.706.88v2.38c0 .527.24.72.38.72.216 0 .397-.193.79-.586 1.226-1.372 2.098-3.497 2.098-3.497.12-.24.323-.47.84-.47h1.74c.525 0 .636.27.525.64-.216 1.001-2.32 3.97-2.32 3.97-.18.29-.24.42 0 .75.18.24.77.75 1.16 1.198.72.814 1.27 1.5 1.42 1.98.15.47-.09.71-.57.71z"/></svg>
+        </a>
+        <a href="#" class="social" aria-label="Instagram" id="footer-ig">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+        </a>
+      </div>
+      <p class="footer-copy">© 2026 Virtual Universe</p>
+    </div>
+  </footer>
+
+  <script>
+    // NAV scroll effect
+    window.addEventListener('scroll', () => {
+      document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // Countdown timer
+    function updateTimer() {
+      const diff = new Date('2026-06-13T12:00:00') - new Date();
+      if (diff <= 0) {
+        document.getElementById('timer').innerHTML =
+          '<span style="font-family:var(--font-h);color:var(--accent);letter-spacing:.1em">ТУРНИР НАЧАЛСЯ</span>';
+        return;
+      }
+      const pad = n => String(n).padStart(2, '0');
+      document.getElementById('days').textContent    = pad(Math.floor(diff / 86400000));
+      document.getElementById('hours').textContent   = pad(Math.floor(diff % 86400000 / 3600000));
+      document.getElementById('minutes').textContent = pad(Math.floor(diff % 3600000 / 60000));
+      document.getElementById('seconds').textContent = pad(Math.floor(diff % 60000 / 1000));
+    }
+    updateTimer();
+    setInterval(updateTimer, 1000);
+
+    // Prize pool calculator
+    const slider = document.getElementById('teams-slider');
+    function updateCalc() {
+      const n = parseInt(slider.value);
+      document.getElementById('teams-display').textContent = n;
+      document.getElementById('prize-display').textContent =
+        (n * 2000).toLocaleString('ru-RU') + ' ₽';
+    }
+    if (slider) { slider.addEventListener('input', updateCalc); updateCalc(); }
+
+    // FAQ accordion
+    document.querySelectorAll('.faq-q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const open = item.classList.contains('open');
+        document.querySelectorAll('.faq-item.open').forEach(i => {
+          i.classList.remove('open');
+          i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+        });
+        if (!open) { item.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); }
+      });
+    });
+
+    // Scroll animations
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  </script>
+</body>
+</html>
